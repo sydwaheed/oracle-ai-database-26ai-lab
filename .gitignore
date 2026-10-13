@@ -1,16 +1,28 @@
-# Oracle wallet and credential material
-*.zip
-*.p12
-*.sso
-*.jks
+# Oracle wallet and connection material
+Wallet_*/
 *.pem
-*.key
+*.p12
+*.jks
+tnsnames.ora
+sqlnet.ora
+ojdbc.properties
 
-# Local environment files
+# Secrets and local configuration
 .env
 .env.*
-*.log
+*.secret
+*.secrets
+credentials*
+password*
 
-# Operating system files
+# Archives and installers
+*.zip
+*.tar
+*.tar.gz
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
 .DS_Store
 Thumbs.db
