@@ -1,8 +1,8 @@
 # 06 - OCI Compute VM Provisioning
 
-This section documents provisioning and validating an Oracle Cloud Infrastructure Compute instance using the network foundation from the previous section.
+I created an Oracle Linux Compute instance using the VCN and public subnet from the previous lab.
 
-## Instance configuration
+## Instance settings
 
 | Setting | Value |
 | --- | --- |
@@ -22,65 +22,64 @@ This section documents provisioning and validating an Oracle Cloud Infrastructur
 | Private IPv4 | Automatically assigned |
 | Public IPv4 | Automatically assigned |
 | Boot volume | 47 GB |
-| Boot-volume in-transit encryption | Enabled |
+| In-transit encryption | Enabled |
 | Instance Metadata Service | Version 2 only |
 
-## Networking
+## VNIC and addresses
 
 The primary VNIC was attached to `OCI-LAB-PUBLIC-SUBNET`.
 
-The instance received:
+OCI assigned a private address from `10.10.10.0/24` and an ephemeral public IPv4 address.
 
-- private address from `10.10.10.0/24`
-- an ephemeral public IPv4 address for lab access
-- a private DNS record
-- hostname `oci-lab-vm01`
+A private DNS record was also created with hostname:
 
-The exact public IP is intentionally not stored in this repository because it is ephemeral lab data.
+```text
+oci-lab-vm01
+```
 
-## Access
+I have not stored the public IP in this repository because it is temporary.
 
-OCI generated an SSH key pair during provisioning.
+## SSH key
 
-The private key remains outside this repository and is excluded by `.gitignore`.
+During instance creation I selected the option for OCI to generate the SSH key pair.
 
-The default Oracle Linux account used for administrative access is:
+The private key is kept outside the repository. Key files are excluded in `.gitignore`.
+
+The default Oracle Linux login user is:
 
 ```text
 opc
 ```
 
-## Storage
+## Boot volume
 
-The instance was created with its default boot volume.
+OCI created the boot volume as part of the instance build.
 
-Validation in the OCI console confirmed:
-
-- boot volume state: `Attached`
-- size: 47 GB
-- in-transit encryption: enabled
-- image: Oracle Linux 9.8
-
-Additional block volumes are covered separately so storage attachment and persistence can be validated independently.
-
-## Provisioning validation
-
-The OCI work request completed successfully and the instance reached:
+The Storage page showed:
 
 ```text
-Running
+State                  Attached
+Size                   47 GB
+In-transit encryption  Enabled
+Image                  Oracle Linux 9.8
 ```
 
-The OCI console was then used to validate the instance details, primary VNIC, boot volume, and console access.
+No additional block volume was attached during this activity.
 
-## Console connection
+## Provisioning check
 
-An OCI Cloud Shell console connection was created and reached the serial-console login prompt for:
+The create instance work request completed with `Succeeded` and the instance status changed to `Running`.
+
+I then checked the instance details, networking and storage pages in the OCI console.
+
+## Console check
+
+I also launched an OCI Cloud Shell console connection. It reached the serial console login prompt:
 
 ```text
 oci-lab-vm01 login:
 ```
 
-The serial console was used only as a validation/troubleshooting path. Normal administration is performed through SSH.
+This confirmed that the console connection path was working. I kept normal administration separate and used SSH for the next lab.
 
-See [validation-commands.sh](validation-commands.sh) for the guest operating-system validation commands used after login.
+The OS checks used after login are in [validation-commands.sh](validation-commands.sh).
