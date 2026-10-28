@@ -1,19 +1,17 @@
 # 07 - OCI Compute SSH Access and OS User Authentication
 
-This section extends the Compute VM lab by validating two different operating-system access models on the same Oracle Linux instance.
+In this lab I tested two login methods on the same Oracle Linux VM.
 
-## Access models validated
+| User | Login method |
+| --- | --- |
+| opc | SSH key |
+| shussaini | Password |
 
-| Account | Authentication | Purpose |
-| --- | --- | --- |
-| opc | SSH public key | Default OCI administrative access |
-| shussaini | Password | User-specific lab authentication example |
+## Default opc login
 
-## Baseline SSH validation
+The `opc` account was accessed with the private key generated when the Compute instance was created.
 
-The default `opc` account was accessed with the SSH key generated during instance provisioning.
-
-The running OpenSSH service was validated with:
+I checked the SSH service and the effective default settings:
 
 ```bash
 sudo systemctl is-active sshd
@@ -21,7 +19,7 @@ sudo sshd -T | grep -E '^(pubkeyauthentication|passwordauthentication|permitroot
 sudo ss -lntp | grep ':22'
 ```
 
-The observed baseline included:
+The output included:
 
 ```text
 permitrootlogin without-password
@@ -29,11 +27,11 @@ pubkeyauthentication yes
 passwordauthentication no
 ```
 
-This confirmed that the default OCI access remained key-based.
+The default OCI login therefore remained key based.
 
-## Local user creation
+## Creating a second OS user
 
-A separate local account was created for the password-authentication exercise:
+I created a normal local account:
 
 ```bash
 sudo useradd -m -s /bin/bash shussaini
@@ -42,43 +40,41 @@ id shussaini
 getent passwd shussaini
 ```
 
-The account was created with a normal home directory and Bash shell. No password is stored in this repository.
+The password command also showed that the operating system password policy rejects weak passwords. No password is stored here.
 
-## User-specific SSH policy
+## Password login only for this user
 
-Instead of enabling password authentication globally, a dedicated OpenSSH drop-in file was created:
+I did not enable password authentication for every SSH user.
+
+Instead I created:
 
 ```text
 /etc/ssh/sshd_config.d/60-shussaini-password.conf
 ```
 
-The exact lab configuration is stored in [60-shussaini-password.conf](60-shussaini-password.conf).
+with a `Match User shussaini` block.
 
-It uses a `Match User` block so the password authentication change applies only to `shussaini` while the existing `opc` key-based model remains unchanged.
+The configuration used in the lab is in [60-shussaini-password.conf](60-shussaini-password.conf).
 
-## Configuration validation
+## Checking the SSH configuration
 
-Before restarting SSH, the configuration syntax was checked:
+Before restarting `sshd` I ran:
 
 ```bash
 sudo sshd -t
 echo $?
 ```
 
-The syntax check returned:
+The return code was `0`.
 
-```text
-0
-```
-
-The effective configuration for the user was then validated with:
+I also checked the settings that apply specifically to `shussaini`:
 
 ```bash
 sudo sshd -T -C user=shussaini,host=oci-lab-vm01,addr=127.0.0.1 \
   | grep -E '^(passwordauthentication|pubkeyauthentication|kbdinteractiveauthentication|authenticationmethods)'
 ```
 
-The effective settings were:
+The result was:
 
 ```text
 pubkeyauthentication no
@@ -87,7 +83,7 @@ kbdinteractiveauthentication no
 authenticationmethods password
 ```
 
-After validation:
+I restarted the service only after the configuration check passed:
 
 ```bash
 sudo systemctl restart sshd
@@ -96,17 +92,11 @@ sudo systemctl is-active sshd
 
 The service returned `active`.
 
-## Login validation
+## Login test
 
-A new SSH session was opened as:
+I opened a new SSH session as `shussaini` and authenticated with the password set for that account.
 
-```text
-shussaini@<ephemeral-public-ip>
-```
-
-and authenticated with the user's password.
-
-After login, the session was validated with:
+After login I checked:
 
 ```bash
 whoami
@@ -116,12 +106,6 @@ pwd
 date
 ```
 
-The user remained a standard local account and was not added to the `wheel` group.
+The account remained a normal local user and was not added to `wheel`.
 
-## Security note
-
-Password-only SSH access was enabled here deliberately as an educational lab scenario for a single user.
-
-For production environments, access should follow the organization's security standard, such as controlled SSH keys, centralized identity, PAM/bastion access, short-lived credentials, MFA-backed access paths, restricted source networks, and least privilege.
-
-Private keys and passwords are never committed to this repository.
+Password based SSH was used only for this lab exercise. In a production environment I would normally use the access method approved for that environment, such as managed SSH keys, PAM, a bastion or centralized identity.
