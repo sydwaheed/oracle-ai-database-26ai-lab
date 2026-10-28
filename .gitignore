@@ -26,3 +26,11 @@ password*
 *.swp
 .DS_Store
 Thumbs.db
+
+# SSH keys and local access material
+*.key
+*.ppk
+*.pub
+id_rsa*
+id_ed25519*
+ssh-key-*
