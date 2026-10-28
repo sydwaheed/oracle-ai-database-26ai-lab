@@ -1,22 +1,16 @@
 # 04 - Native Vector Search
 
-This section uses an Oracle AI Database 26ai feature that is different from ordinary relational SQL.
+For this lab I used the native `VECTOR` datatype in Oracle AI Database 26ai and compared stored vectors with `VECTOR_DISTANCE`.
 
-The lab stores vectors directly in a column defined with the native `VECTOR` datatype and then compares them using `VECTOR_DISTANCE`.
-
-## Vector table
-
-The table uses:
+## Vector column
 
 ```sql
 ITEM_VECTOR VECTOR(3, FLOAT32)
 ```
 
-For this exercise I used small, manually defined three-dimensional vectors so the calculation is easy to inspect.
+I entered small three dimensional vectors manually so the values and results are easy to inspect. They are not embeddings produced by a model.
 
-These values are **not AI-generated embeddings**. A real embedding model would normally produce vectors with many more dimensions.
-
-## Test vectors
+## Test data
 
 | Item | Vector |
 | --- | --- |
@@ -25,21 +19,19 @@ These values are **not AI-generated embeddings**. A real embedding model would n
 | Data Guard High Availability | [0.8,0.2,0.1] |
 | Linux System Administration | [0,1,1] |
 
-The reference vector is:
+Reference vector:
 
 ```text
 [1,0,0]
 ```
 
-## Distance query
-
-The query uses the COSINE metric:
+## Distance calculation
 
 ```sql
 VECTOR_DISTANCE(ITEM_VECTOR, '[1,0,0]', COSINE)
 ```
 
-A smaller cosine distance means the vectors are closer under this metric.
+A lower cosine distance means the two vectors are closer for this calculation.
 
 ## Result
 
@@ -50,6 +42,6 @@ A smaller cosine distance means the vectors are closer under this metric.
 | Data Guard High Availability | 0.036913 |
 | Linux System Administration | 1 |
 
-The result matched the expected ordering for the manually selected vectors.
+The exact matching vector returned zero and the remaining rows were ordered by their calculated distance.
 
-See [vector-search.sql](vector-search.sql) for the complete script.
+The complete SQL is in [vector-search.sql](vector-search.sql).
