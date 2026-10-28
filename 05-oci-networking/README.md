@@ -1,8 +1,8 @@
 # 05 - OCI Networking Foundation
 
-This section documents the Oracle Cloud Infrastructure network foundation built for the hands-on compute labs.
+This is the network I created for the OCI Compute and storage labs.
 
-## Lab configuration
+## Configuration
 
 | Setting | Value |
 | --- | --- |
@@ -14,44 +14,39 @@ This section documents the Oracle Cloud Infrastructure network foundation built 
 | Public subnet CIDR | 10.10.10.0/24 |
 | Private subnet | OCI-LAB-PRIVATE-SUBNET |
 | Private subnet CIDR | 10.10.20.0/24 |
-| Internet gateway | OCI-LAB-IGW |
+| Internet Gateway | OCI-LAB-IGW |
 | Public route table | OCI-LAB-PUBLIC-RT |
 | Private route table | OCI-LAB-PRIVATE-RT |
 
-## Design
+## Public subnet
 
-The VCN was created as the reusable network foundation for later OCI compute and storage exercises.
-
-The public subnet is associated with a route table containing a default route:
+The public route table contains:
 
 ```text
-Destination: 0.0.0.0/0
-Target:      OCI-LAB-IGW
+Destination  0.0.0.0/0
+Target       OCI-LAB-IGW
 ```
 
-This allows resources with public IP addresses in the public subnet to reach the internet through the Internet Gateway.
+Instances in this subnet can use the Internet Gateway when they have a public IP address and the required security rules.
 
-A separate private subnet and route table were also created to preserve the public/private network separation in the lab design.
+## Private subnet
 
-## Service-limit observation
+I also created a separate private subnet and route table using `10.10.20.0/24`.
 
-During the build, the tenancy reported a service limit of zero for NAT Gateways and Service Gateways per VCN. Because of that limit, the private route table was intentionally left without NAT or Service Gateway routes.
+While building the lab, OCI showed a service limit of zero for NAT Gateways and Service Gateways per VCN. Because of that account limit, I left the private route table without a NAT or Service Gateway route.
 
-This was treated as a lab constraint rather than bypassed with a different design.
+## Final check
 
-## Validation checkpoints
+The network resources were available with the following layout:
 
-The completed network showed:
+```text
+VCN             10.10.0.0/16
+Public subnet   10.10.10.0/24
+Private subnet  10.10.20.0/24
+Internet GW     OCI-LAB-IGW
+Public route    0.0.0.0/0 through OCI-LAB-IGW
+```
 
-- VCN state: `Available`
-- Public subnet: `10.10.10.0/24`
-- Private subnet: `10.10.20.0/24`
-- Internet Gateway: `Available`
-- Public route table: one rule to `0.0.0.0/0` through `OCI-LAB-IGW`
-- Private route table: created and available with no outbound gateway rule
+The public subnet is used by `OCI-LAB-VM01` in the next lab.
 
-## Next use
-
-The public subnet is used by the Compute VM lab in the next section.
-
-> This is a disposable personal lab. Production VCN design should use routing, security, private connectivity, service gateways, NAT, NSGs/security lists, and IAM controls appropriate to the workload.
+This is a personal lab design. A production VCN would be built according to the required routing, security and access model.
