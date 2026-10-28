@@ -1,12 +1,10 @@
 # 02 - Database Validation
 
-After the Autonomous AI Database became available, I opened **Database Actions SQL Worksheet** as the ADMIN database user.
+After the database became available, I opened Database Actions SQL Worksheet as the ADMIN user.
 
-The goal here was to prove the database version and active SQL session from inside the database.
+I wanted to confirm the database from SQL instead of depending only on the OCI console status.
 
-## Version check
-
-The first query reads the database banner:
+## Database version
 
 ```sql
 SELECT banner_full
@@ -14,11 +12,9 @@ FROM v$version
 WHERE banner_full LIKE 'Oracle%Database%';
 ```
 
-The lab returned Oracle AI Database 26ai with release version 23.26.4.1.0.
+The result showed Oracle AI Database 26ai with release version 23.26.4.1.0.
 
-## Session identity check
-
-The second query confirms the current database, container, user, and database time:
+## Session details
 
 ```sql
 SELECT
@@ -31,10 +27,6 @@ FROM dual;
 
 The session was connected as ADMIN to the Autonomous database container.
 
-## Why I used both checks
+The OCI page confirmed that the service was available. These SQL queries confirmed that Database Actions was connected to the expected running database.
 
-The OCI console proves that the cloud resource exists and is available.
-
-The SQL checks prove that Database Actions is connected to the running database and that SQL is being executed against the expected Oracle AI Database 26ai environment.
-
-See [database-validation.sql](database-validation.sql) for the reusable queries.
+The reusable SQL is in [database-validation.sql](database-validation.sql).
