@@ -1,6 +1,6 @@
 # The Oracle Runbook - OCI Cloud Labs
 
-This repository contains my hands-on Oracle Cloud lab work. It started with Oracle AI Database 26ai and now includes the OCI network and Compute environment used for the next labs.
+This repository contains my hands-on Oracle Cloud lab work. It started with Oracle AI Database 26ai and now includes the OCI network, Compute and storage environment used for the next labs.
 
 Everything here was built in my personal lab. I do not use customer or employer environment details in this repository.
 
@@ -15,6 +15,7 @@ Everything here was built in my personal lab. I do not use customer or employer 
 | [05-oci-networking](05-oci-networking/) | Created the VCN, public and private subnets, Internet Gateway and route tables |
 | [06-oci-compute-provisioning](06-oci-compute-provisioning/) | Created an Oracle Linux Compute VM and checked its network, boot volume, metadata and console access |
 | [07-oci-ssh-user-authentication](07-oci-ssh-user-authentication/) | Tested the default key based login and a separate password based OS user |
+| [08-oci-block-storage](08-oci-block-storage/) | Created and attached paravirtualized and iSCSI Block Volumes and validated persistent XFS mounts |
 
 ## Current lab environment
 
@@ -28,6 +29,8 @@ Everything here was built in my personal lab. I do not use customer or employer 
 | Compute instance | OCI-LAB-VM01 |
 | Operating system | Oracle Linux Server 9.8 |
 | Compute shape | VM.Standard.E2.1.Micro |
+| Block volume /u01 | OCI-LAB-BV-U01 - 50 GB - Paravirtualized |
+| Block volume /u02 | OCI-LAB-BV-U02 - 100 GB - iSCSI |
 | Database service | Autonomous AI Database Serverless |
 | Database version | Oracle AI Database 26ai |
 
@@ -93,6 +96,16 @@ For a separate lab test, I created the local user `shussaini` and used an OpenSS
 
 The SSH configuration was syntax checked before the service was restarted.
 
+## OCI Block Volume storage
+
+Two Block Volumes were added to `OCI-LAB-VM01` using different attachment methods.
+
+`OCI-LAB-BV-U01` is a 50 GB paravirtualized volume mounted as `/u01`.
+
+`OCI-LAB-BV-U02` is a 100 GB iSCSI volume mounted as `/u02`.
+
+Both filesystems use XFS and UUID based `/etc/fstab` entries. A full VM reboot was used to confirm that both filesystems mounted automatically without manual intervention.
+
 ## Run order
 
 1. [Autonomous AI Database setup](01-autonomous-database-setup/)
@@ -102,8 +115,9 @@ The SSH configuration was syntax checked before the service was restarted.
 5. [OCI networking](05-oci-networking/)
 6. [OCI Compute provisioning](06-oci-compute-provisioning/)
 7. [SSH and OS user authentication](07-oci-ssh-user-authentication/)
+8. [OCI Block Volume storage](08-oci-block-storage/)
 
-The next lab will cover OCI Block Volume storage with both paravirtualized and iSCSI attachment methods.
+The next lab will cover OCI Object Storage.
 
 ## Notes
 
