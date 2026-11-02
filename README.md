@@ -16,6 +16,7 @@ Everything here was built in my personal lab. I do not use customer or employer 
 | [06-oci-compute-provisioning](06-oci-compute-provisioning/) | Created an Oracle Linux Compute VM and checked its network, boot volume, metadata and console access |
 | [07-oci-ssh-user-authentication](07-oci-ssh-user-authentication/) | Tested the default key based login and a separate password based OS user |
 | [08-oci-block-storage](08-oci-block-storage/) | Created and attached paravirtualized and iSCSI Block Volumes and validated persistent XFS mounts |
+| [09-oracle-apex-dba-inventory](09-oracle-apex-dba-inventory/) | Built an Oracle APEX DBA inventory application with reporting, DML forms, LOVs, validation and Dynamic Actions |
 
 ## Current lab environment
 
@@ -33,6 +34,9 @@ Everything here was built in my personal lab. I do not use customer or employer 
 | Block volume /u02 | OCI-LAB-BV-U02 - 100 GB - iSCSI |
 | Database service | Autonomous AI Database Serverless |
 | Database version | Oracle AI Database 26ai |
+| APEX database | APEX-LAB-DB (APEXLABDB) |
+| APEX workspace | DBA_LAB |
+| APEX application | OCI DBA Lab Manager |
 
 ## Oracle AI Database 26ai
 
@@ -106,6 +110,14 @@ Two Block Volumes were added to `OCI-LAB-VM01` using different attachment method
 
 Both filesystems use XFS and UUID based `/etc/fstab` entries. A full VM reboot was used to confirm that both filesystems mounted automatically without manual intervention.
 
+## Oracle APEX DBA inventory application
+
+For the APEX activity I created a separate Autonomous Database using the APEX workload and built a small DBA-facing inventory application.
+
+The lab includes a dedicated `DBA_LAB` workspace, a `DBA_LAB_DATABASES` source table, an Interactive Report, modal DML form, controlled Select Lists, a server-side DR/environment validation and a Dynamic Action that shows or hides DR guidance without submitting the page.
+
+The application and all inventory records use lab-only names and sample data.
+
 ## Run order
 
 1. [Autonomous AI Database setup](01-autonomous-database-setup/)
@@ -116,8 +128,9 @@ Both filesystems use XFS and UUID based `/etc/fstab` entries. A full VM reboot w
 6. [OCI Compute provisioning](06-oci-compute-provisioning/)
 7. [SSH and OS user authentication](07-oci-ssh-user-authentication/)
 8. [OCI Block Volume storage](08-oci-block-storage/)
+9. [Oracle APEX DBA inventory application](09-oracle-apex-dba-inventory/)
 
-The next lab will cover OCI Object Storage.
+The next lab will cover OCI Monitoring and Notifications.
 
 ## Notes
 
@@ -132,6 +145,7 @@ Production environments need security, network, IAM, monitoring and operating sy
 * [Oracle AI Database 26ai Documentation](https://docs.oracle.com/en/database/oracle/oracle-database/26/)
 * [Oracle Autonomous AI Database Documentation](https://docs.oracle.com/en/cloud/paas/autonomous-database/)
 * [Oracle Cloud Infrastructure Documentation](https://docs.oracle.com/en-us/iaas/Content/home.htm)
+* [Oracle APEX Documentation](https://docs.oracle.com/en/database/oracle/apex/)
 * [Oracle Linux Documentation](https://docs.oracle.com/en/operating-systems/oracle-linux/)
 
 ## Author
